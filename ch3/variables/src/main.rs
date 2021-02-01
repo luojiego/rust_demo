@@ -9,4 +9,6 @@ fn main() {
 	println!("The value of spaces is: {}", spaces);
 	let spaces = spaces.len();
 	println!("The value of spaces is: {}", spaces);
+	let mut y = 100;
+	y = "hello world!";
 }
