@@ -2,9 +2,18 @@ use std::fs::{self,File};
 use std::io::ErrorKind;
 use std::io;
 use std::io::Read;
-fn main() {
-    // test5();
-    println!("read_username_from_file3: {:?}", read_username_from_file3());
+use std::error::Error;
+
+// fn main() {
+//     // test5();
+//     // println!("read_username_from_file3: {:?}", read_username_from_file3());
+// }
+// 
+fn main() ->Result<(), Box<dyn Error>> {
+    // main 函数比较特殊，也可以有返回值
+    let f = File::open("hello.txt")?;
+
+    Ok(())
 }
 
 fn test1() {
