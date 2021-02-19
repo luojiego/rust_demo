@@ -1,14 +1,14 @@
-// fn largest<T>(list: &[T]) -> &T {
-//     let mut largest = &list[0];
-// 
-//     for item in list {
-//         if item > largest {
-//             largest = item;
-//         }
-//     }
-//     largest
-// }
-//
+use std::cmp::PartialOrd;
+fn largest<T: PartialOrd>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+
+    for item in list {
+        if item > largest {
+            largest = item;
+        }
+    }
+    largest
+}
 
 struct Point<T> {
     x: T,
@@ -43,18 +43,18 @@ impl<T, U> Point1<T, U> {
 }
 
 fn main() {
-    // 暂时无法编译
-    // let number_list = vec![34, 50, 25, 100, 65];
-    // let result = largest(&number_list);
-    // println!("the largest number is {}", result);
+    let number_list = vec![34, 50, 25, 100, 65];
+    let result = largest(&number_list);
+    println!("the largest number is {}", result);
 
-    // let char_list = vec!['h', 'e', 'l', 'o', 'd', 'w', ];
-    // let result = largest(&char_list);
-    // println!("the largest char is {}", result);
+    let char_list = vec!['h', 'e', 'l', 'o', 'd', 'w', ];
+    let result = largest(&char_list);
+    println!("the largest char is {}", result);
 
     // Rust 的泛型与 C++ 有好多地方是相似的
     // 但其牛逼之处在于泛型代码是在编译器生成的，并非是 runtime
     // 所以几乎可以说是没有消耗
+    
     let integer = Point { x: 5, y: 10};
     println!("x = {}", integer.x());
     // println!("integer.distance_from_origin(): {}", integer.distance_from_origin());
