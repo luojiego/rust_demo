@@ -1,26 +1,4 @@
-#[derive(Debug)]
-struct Rectangle {
-	width: u32,
-	height: u32,
-}
-
-impl Rectangle {
-    fn area(&self) -> u32 {
-        return self.width * self.height;
-    }
-
-    fn can_hold(&self, dest: &Rectangle) -> bool {
-        self.area() > dest.area()
-    }
-
-    fn square(size: u32) -> Rectangle {
-        Rectangle {
-            width: size,
-            height: size,
-        }
-    }
-}
-
+use rectangle::Rectangle;
 fn main() {
 	let rec = Rectangle {
 		width: 30,
