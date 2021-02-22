@@ -6,6 +6,15 @@ pub fn greeting(name: &str) -> String {
     format!("Hello {}", name)
 }
 
+pub fn prints_and_return_10(a: i32) -> i32 {
+    println!("I got the value {}", a);
+    10
+}
+
+fn internal_adder(a: i32, b:i32) -> i32 {
+    a + b
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
@@ -13,6 +22,9 @@ mod tests {
         assert_eq!(2 + 2, 4);
     }
 
+    // 设置忽略的测试用例
+    // 运行该测试用例的命令
+    // cargo test -- --ignored
     #[test]
     #[ignore]
     fn it_cant_works() {
@@ -77,5 +89,32 @@ mod tests {
         } else {
             Err(String::from("tow plus two does not equal four"))
         }
+    }
+
+    // Rust 测试用例 默认是 Parallel 并行的
+    // 若测试用例有先后顺序的要求，需要设定 --test-threads = 1
+    // 完整命令为 cargo test -- --test-threads=1
+
+    // Rust 被测试函数有输出的问题
+    // 使用 cargo test this 时
+    // this_test_will_pass 并不会输出 "I got the value 4"
+    // 但是 this_test_will_fail 会输出 "I got the value 8"
+    // 若需要输出，加上参数 -- --show-output 即可
+    #[test]
+    fn this_test_will_pass() {
+        let value = prints_and_return_10(4);
+        assert_eq!(10, value);
+    }
+
+    #[test]
+    fn this_test_will_fail() {
+        let value = prints_and_return_10(8);
+        assert_eq!(4, value);
+    }
+
+    // 测试私有的函数
+    #[test]
+    fn internal() {
+        assert_eq!(4, internal_adder(2, 2));
     }
 }
