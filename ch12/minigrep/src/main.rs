@@ -3,25 +3,35 @@ use std::env;
 use minigrep::Config;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    // let args: Vec<String> = env::args().collect();
     // 优化
     // println!("{:#?}", args);
     // let query = &args[1];
     // let filename = &args[2];
 
     // 优化1
+    // let args: Vec<String> = env::args().collect();
     // let (query, filename) = parse_config(&args);
     // println!("Searching for {}", query);
     // println!("In file {}", filename);
 
     // 优化 2
+    // let args: Vec<String> = env::args().collect();
     // let config = parse_config(&args);
 
     // 优化 3
+    // let args: Vec<String> = env::args().collect();
     // let config = Config::new(&args);
 
     // 优化 4
-    let config = Config::new(&args).unwrap_or_else(|err|{
+    // let args: Vec<String> = env::args().collect();
+    // let config = Config::new(&args).unwrap_or_else(|err|{
+    //     eprintln!("Problem parsing arguments: {}", err);
+    //     process::exit(1);
+    // });
+
+    // 优化 9
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
         eprintln!("Problem parsing arguments: {}", err);
         process::exit(1);
     });
