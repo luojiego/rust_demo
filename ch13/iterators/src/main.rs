@@ -1,4 +1,4 @@
-use std::iter::Filter;
+// use std::iter::Filter;
 
 fn main() {
     {
@@ -9,6 +9,13 @@ fn main() {
         }
     }
 
+    let x = 3;
+    let r = is_odd(3);
+    println!("is_odd({}) = {}", x, r);
+}
+
+fn is_odd(i: i32) -> bool {
+    i % 2 == 0
 }
 
 #[test]
