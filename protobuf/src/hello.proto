@@ -1,0 +1,12 @@
+syntax="proto3";
+
+package hello;
+
+message Person {
+    string name = 1;
+    uint32 age = 2;
+    repeated string address = 3;
+}
+
+// protoc.exe --rust_out=./ hello.proto
+// 生成 proto 对应的 rs 文件
