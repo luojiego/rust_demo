@@ -1,7 +1,7 @@
 use std::{collections::HashMap, fs::File, io::{BufRead, BufReader}};
 use std::env;
 
-#[derive(Debug, Clone, Copy)]
+// #[derive(Debug, Copy)]
 struct WordCounter(HashMap<String, u64>);
 
 impl WordCounter {
@@ -9,7 +9,7 @@ impl WordCounter {
         WordCounter(HashMap::new())
     }
 
-    fn increment(mut self, word: &str) {
+    fn increment(&mut self, word: &str) {
         let key = word.to_string();
         let count = self.0.entry(key).or_insert(0);
         *count += 1;
@@ -22,15 +22,7 @@ impl WordCounter {
     }
 }
 
-// impl Clone for WordCounter {
-//     fn clone(&self) -> Self {
-//         
-//     }
-// }
-// 
-// impl Copy for WordCounter{
-// 
-// }
+// 运行 cargo run ./src/main.rs
 
 fn main() {
     let arguments: Vec<String> = env::args().collect();
