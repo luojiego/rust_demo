@@ -2,6 +2,8 @@ use clap::{AppSettings, Clap};
 use anyhow::{anyhow, Result};
 use reqwest::{header, Client, Response, Url};
 use std::{collections::HashMap, str::FromStr};
+use mime::Mime;
+use colored::*;
 
 /// A naive httpie implementation with Rust, can you imagine how easy it is?
 #[derive(Clap, Debug)]
@@ -73,8 +75,8 @@ fn parse_kv_pair(s: &str) -> Result<KvPair> {
 
 async fn get(client: Client, args: &Get) -> Result<()> {
     let resp = client.get(&args.url).send().await?;
-    println!("{:?}", resp.text().await?);
-    Ok(())
+    // println!("{:?}", resp.text().await?);
+    Ok(print_resp(resp).await?)
 }
 
 async fn post(client: Client, args: &Post) -> Result<()> {
@@ -83,7 +85,41 @@ async fn post(client: Client, args: &Post) -> Result<()> {
         body.insert(&pair.k, &pair.v);
     }
     let resp = client.post(&args.url).json(&body).send().await?;
-    println!("{:?}", resp.text().await?);
+    // println!("{:?}", resp.text().await?);
+    Ok(print_resp(resp).await?)
+}
+
+fn print_status(resp: &Response) {
+    let status = format!("{:?} {}", resp.version(), resp.status()).blue();
+    println!("{}\n", status);
+}
+
+fn print_header(resp: &Response) {
+    for (name, value) in resp.headers() {
+        println!("{}: {:?}", name.to_string().green(), value);
+    }
+    println!();
+}
+
+fn get_content_type(resp: &Response) -> Option<Mime> {
+    resp.headers().get(header::CONTENT_TYPE).map(|v|v.to_str().unwrap().parse().unwrap())
+}
+
+fn print_body(m: Option<Mime>, body: &String) {
+    match m {
+        Some(v) if v.to_string().contains("application/json") => {
+            println!("{}", jsonxf::pretty_print(body).unwrap().cyan())
+        }
+        _ => println!("{}", body),
+    }
+}
+
+async fn print_resp(resp: Response) -> Result<()> {
+    print_status(&resp);
+    print_header(&resp);
+    let mime = get_content_type(&resp);
+    let body = resp.text().await?;
+    print_body(mime, &body);
     Ok(())
 }
 
@@ -91,7 +127,11 @@ async fn post(client: Client, args: &Post) -> Result<()> {
 async fn main() ->Result<()> {
     let opts: Opts = Opts::parse();
     // println!("{:?}", opts);
-    let client = Client::new();
+    // let client = Client::new();
+    let mut headers = header::HeaderMap::new();
+    headers.insert("X-POWERD-BY", "Rust".parse()?);
+    headers.insert(header::USER_AGENT, "Rust Httpie".parse()?);
+    let client = reqwest::Client::builder().default_headers(headers).build()?;
     let result = match opts.subcmd {
         Subcommand::Get(ref args) => get(client, args).await?,
         Subcommand::Post(ref args) => post(client, args).await?,
