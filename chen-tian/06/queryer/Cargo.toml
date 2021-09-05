@@ -1,6 +1,9 @@
 [[example]]
 name="dialect"
 
+[[example]]
+name="covid"
+
 [package]
 name = "queryer"
 version = "0.1.0"
