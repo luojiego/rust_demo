@@ -9,3 +9,5 @@
 *.json
 debug/ 
 target/
+*.md
+pb/
