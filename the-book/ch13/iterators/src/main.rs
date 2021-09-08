@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 // use std::iter::Filter;
 
 fn main() {
@@ -147,6 +149,12 @@ fn using_other_iterator_trait_methods() {
         println!("zip Got: {:?}", val);
     }
 
+    let v = vec![1, 2, 3, 4, 5, 6];
+    let iter = Counter::new().zip(v.iter().skip(3)).map(|(a,b)| a * b);
+    for val in iter {
+        println!("\tzip Got: {:?}", val);
+    }
+
     let iter = Counter::new().zip(Counter::new().skip(1)).map(|(a,b)| a * b);
     for val in iter {
         println!("map Got: {:?}", val);
@@ -162,4 +170,55 @@ fn using_other_iterator_trait_methods() {
     // !!! 重要
     // 不能使用 iter 的中间值
     assert_eq!(18, sum);
+}
+
+#[test]
+fn test_iter_skip() {
+    let v = vec![1,2,3,4,5,6];
+    let v = v.iter().skip(3);
+    for iter in v {
+        println!("Got {}", iter);
+    }
+
+    // let v: Vec<_> = v.iter().skip(3).collect();
+    // println!("{:#?}", v)
+}
+
+#[test]
+fn test_iter_map() {
+    let v = vec![1,2,3,4,5,6];
+    let v: Vec<_> = v.iter().map(|x| x * 100).collect();
+    assert_eq!(v, vec![100,200,300,400,500,600])
+}
+
+#[test]
+fn test_iter_filter() {
+    let v = vec![1,2,3,4,5,6]; // 3 6 9 12 15 18
+    let v: Vec<_> = v.iter().map(|x|x * 3).filter(|x|x % 2 == 0).collect();
+    assert_eq!(v, vec![6, 12, 18]);
+
+    let v: Vec<_> = (0..10).filter(|x|x % 3 == 0).collect();
+    assert_eq!(v, vec![0, 3, 6, 9]);
+
+    let v = vec![1,2,3];
+    let v: Vec<_> = v.iter().filter(|&&x|x%2==0).collect();
+    println!("{:#?}", v);
+    assert_eq!(v, vec![&2]);
+
+    let v1 = vec![1,2,3,4,5,6];
+    let v2 = vec![1,2,3,4,5,6];
+   
+    let v: HashMap<_, _> = v1.iter().zip(v2.iter().skip(3)).collect();
+    println!("{:#?}", v);
+
+    let sum = v2.iter().fold(0, |acc,x| acc + x);
+    println!("sum: {}", sum);
+
+    let a = [0i32, 1, 2];
+
+    let mut iter = a.iter().filter(|x| x.is_positive());
+
+    assert_eq!(iter.next(), Some(&1));
+    assert_eq!(iter.next(), Some(&2));
+    assert_eq!(iter.next(), None);
 }
