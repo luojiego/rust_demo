@@ -222,3 +222,36 @@ fn test_iter_filter() {
     assert_eq!(iter.next(), Some(&2));
     assert_eq!(iter.next(), None);
 }
+
+#[test]
+fn test_iter_fold() {
+    let v = vec![1,2,3,4,5,6];
+    let sum = v.iter().fold(0,|acc,x|acc+x);
+    assert_eq!(sum, 21);
+    assert_eq!(v.iter().sum::<i32>(), 21);
+
+    let v = v.iter().map(|x| x*x).collect::<Vec<_>>();
+    assert_eq!(v, vec![1, 4, 9, 16, 25, 36]);
+}
+
+#[test]
+fn test_iter_rev() {
+    let v = vec![1,2,3,4,5,6];
+    let v = v.iter().rev().collect::<Vec<_>>();
+    assert_eq!(v, vec![&6,&5,&4,&3,&2,&1])
+}
+
+#[test]
+fn test_iter_chain() {
+    let v = (1..3).chain(8..10).collect::<Vec<_>>();
+    assert_eq!(v, vec![1,2,8,9])
+}
+
+#[test]
+fn test_iter_sum() {
+    let v = vec![1, 2, 4, 8, 16, 32, 64];
+    let sum: i64 = v.iter().sum();
+    assert_eq!(sum as f64, 127.0);
+    assert_eq!(v.iter().max(), Some(&64));
+    assert_eq!(v.iter().min(), Some(&1));
+}
