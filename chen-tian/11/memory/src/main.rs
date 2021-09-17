@@ -43,8 +43,8 @@ fn match_range(v: usize) -> &'static str {
     match v {
         0..=99 => "good",
         100..=9999 => "unbelievable",
-        10000.. => "beyond expectation",
-        _ => unbelievable!(),
+        10000.. => "beyond expectation", // 1.55 才能编译通过
+        _ => unreachable!(),
     }
 }
 
