@@ -41,6 +41,12 @@ impl Data<i32>
 } 
 
 fn main() {
+    let mut a = 100;
+    #[allow(while_true)]
+    while true {
+        a -= 1;
+        if a <= 0 { break }
+    }
     let arr = [0usize;8];
     println!("{:?}", arr);
     let _a = 3;
