@@ -44,7 +44,7 @@ fn match_range(v: usize) -> &'static str {
         0..=99 => "good",
         100..=9999 => "unbelievable",
         10000.. => "beyond expectation",
-        _ => unbelievable!(),
+        _ => unreachable!(),
     }
 }
 
