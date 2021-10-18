@@ -10,5 +10,5 @@ bytes = "1.1.0"
 prost = "0.9.0"
 
 [build-dependencies]
-prost-build = { path = "../../../../prost-build-0.9.0" }
-# prost-build = "0.9.0"
+# prost-build = { path = "../../../../prost-build-0.9.0" }
+prost-build = "0.9.0"
