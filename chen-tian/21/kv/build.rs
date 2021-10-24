@@ -1,5 +1,8 @@
 fn main() {
-    prost_build::Config::new()
+    let mut config = prost_build::Config::new();
+    config.bytes(&["."]);
+    config.type_attribute(".", "#[derive(PartialOrd)]");
+    config
         .out_dir("src/pb")
         .file_descriptor_set_path("target/tmp")
         .compile_protos(&["abi.proto"], &["."])
