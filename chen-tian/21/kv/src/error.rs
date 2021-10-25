@@ -7,7 +7,7 @@ pub enum KvError {
     NotFound(String, String),
 
     #[error("Cannot parse command: {0}")]
-    Invalid(String),
+    InvalidCommand(String),
 
     #[error("Cannot convert value {:0} to {1}")]
     ConvertError(Value, &'static str),
