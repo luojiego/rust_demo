@@ -54,6 +54,7 @@ pub fn dispatch(cmd: CommandRequest, store: &impl Storage) -> CommandResponse {
         Some(RequestData::Hget(param)) => param.execute(store),
         Some(RequestData::Hgetall(param)) => param.execute(store),
         Some(RequestData::Hset(param)) => param.execute(store),
+        Some(RequestData::Hdel(param)) => param.execute(store),
         None => KvError::InvalidCommand("Request has no data".into()).into(),
         _ => KvError::Internal("Not implemented".into()).into(),
     }
@@ -64,7 +65,7 @@ mod tests {
     use std::thread;
 
     use super::*;
-    use crate::{Memtable, Value, Kvpair};
+    use crate::{Memtable, Value};
 
     #[test]
     fn service_should_work() {

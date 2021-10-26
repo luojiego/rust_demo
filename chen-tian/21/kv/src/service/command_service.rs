@@ -33,6 +33,15 @@ impl CommandService for Hset {
     }
 }
 
+impl CommandService for Hdel {
+    fn execute(self, store: &impl Storage) -> CommandResponse { 
+        match store.del(&self.table, &self.key) {
+            Ok(v) => v.into(),
+            Err(e) => e.into(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

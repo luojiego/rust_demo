@@ -34,6 +34,15 @@ impl CommandRequest {
             })),
         }
     }
+
+    pub fn new_hdel(table: impl Into<String>, key: impl Into<String>) -> Self {
+        Self { 
+            request_data: Some(RequestData::Hdel(Hdel {
+                table: table.into(),
+                key: key.into(),
+            })),
+        }
+    }
 }
 
 impl Kvpair {
@@ -107,5 +116,24 @@ impl From<KvError> for CommandResponse {
             _ => {}
         }
         result
+    }
+}
+
+impl From<Option<Value>> for CommandResponse {
+    fn from(e: Option<Value>) -> Self {
+        if let Some(v) = e {
+            Self {
+                status: StatusCode::OK.as_u16() as _,
+                values: vec![v],
+                ..Default::default()
+            }
+        } else {
+            Self {
+                status: StatusCode::OK.as_u16() as _,
+                values: vec![Value::default()],
+                ..Default::default()
+            }
+        }
+
     }
 }
