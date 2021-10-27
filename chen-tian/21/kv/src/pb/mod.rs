@@ -43,6 +43,15 @@ impl CommandRequest {
             })),
         }
     }
+
+    pub fn new_hexists(table: impl Into<String>, key: impl Into<String>) -> Self {
+        Self { 
+            request_data: Some(RequestData::Hexist(Hexist {
+                table: table.into(),
+                key: key.into(),
+            })),
+        }
+    }
 }
 
 impl Kvpair {
@@ -77,6 +86,24 @@ impl From<i64> for Value {
     fn from(i: i64) -> Self {
         Self {
             value: Some(value::Value::Integer(i)),
+        }
+    }
+}
+
+impl From<bool> for Value {
+    fn from(i: bool) -> Self {
+        Self {
+            value: Some(value::Value::Bool(i)),
+        }
+    }
+}
+
+impl From<bool> for CommandResponse {
+    fn from(i: bool) -> Self {
+        Self {
+            status: StatusCode::OK.as_u16() as _,
+            values: vec![i.into()],
+            ..Default::default()
         }
     }
 }
