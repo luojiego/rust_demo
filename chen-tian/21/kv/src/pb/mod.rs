@@ -52,6 +52,33 @@ impl CommandRequest {
             })),
         }
     }
+
+    pub fn new_hmset(table: impl Into<String>, pairs: impl Into<Vec<Kvpair>>) -> Self {
+        Self {
+            request_data: Some(RequestData::Hmset(Hmset {
+                table: table.into(),
+                pairs: pairs.into(),
+            }))
+        }
+    }
+
+    pub fn new_hmget(table: impl Into<String>, keys: impl Into<Vec<String>>) -> Self {
+        Self {
+            request_data: Some(RequestData::Hmget(Hmget {
+                table: table.into(),
+                keys: keys.into(),
+            }))
+        }
+    }
+
+    pub fn new_hmexsits(table: impl Into<String>, keys: impl Into<Vec<String>>) -> Self {
+        Self {
+            request_data: Some(RequestData::Hmexist(Hmexist {
+                table: table.into(),
+                keys: keys.into(),
+            }))
+        }
+    }
 }
 
 impl Kvpair {

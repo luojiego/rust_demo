@@ -51,6 +51,22 @@ impl CommandService for Hexist{
     }
 }
 
+// 需要遍历写入数据
+impl CommandService for Hmset {
+    fn execute(self, store: &impl Storage) -> CommandResponse { 
+        for i in &self.pairs.into_iter() {
+            match store.set(&self.table, i.key, i.value) {
+                Ok(v) => {
+                },
+                Err(e) => {
+                    return e.into();
+                }
+            }
+       }
+       CommandResponse{ status: todo!(), message: todo!(), values: todo!(), pairs: todo!() }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
