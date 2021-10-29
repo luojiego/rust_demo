@@ -1,5 +1,6 @@
 use crate::*;
 use Storage;
+use http::StatusCode;
 impl CommandService for Hget {
     fn execute(self, store: &impl Storage) -> CommandResponse {
         match store.get(&self.table, &self.key) {
@@ -64,8 +65,47 @@ impl CommandService for Hmset {
                 }
             }
       }
-      // CommandResponse{ status: todo!(), message: todo!(), values: todo!(), pairs: todo!() }
       "Ok".to_string().into()
+    }
+}
+
+impl CommandService for Hmget {
+    fn execute(self, store: &impl Storage) -> CommandResponse {
+        let mut res = CommandResponse{
+            status: StatusCode::OK.as_u16() as _,
+            values: vec![],
+            ..Default::default()
+        };
+        for i in self.keys.iter() {
+            match store.get(&self.table, &i) {
+                Ok(Some(v)) => res.values.push(v),
+                Ok(None) => {
+                    return KvError::NotFound(self.table, i.clone()).into();
+                },
+                Err(e) => {
+                    return e.into();
+                }
+            };
+        }
+        res
+    }
+}
+
+impl CommandService for Hmexist {
+    fn execute(self, store: &impl Storage) -> CommandResponse {
+        let mut res = CommandResponse{
+            status: StatusCode::OK.as_u16() as _,
+            values: vec![],
+            ..Default::default()
+        };
+        for i in self.keys.iter() {
+            match store.contains(&self.table, &i) {
+                Ok(v) => res.values.push(v.into()),
+                Err(_) => {
+                }
+            };
+        }
+        res
     }
 }
 
@@ -100,13 +140,21 @@ mod tests {
 
     #[test]
     fn hmset_should_work() {
-        let _store = Memtable::new();
-        let _cmd = CommandRequest::new_hmset("t1", 
+        let store = Memtable::new();
+        let cmd = CommandRequest::new_hmset("t1", 
         vec![
                 Kvpair { key: "name".into(), value: Some("LuoJie".to_string().into()) }, 
                 Kvpair { key: "age".into(), value: Some(31.into()) },
         ]);
-        
+        let res = dispatch(cmd.unwrap(), &store);
+        // let v = cmd.unwrap();
+        assert_eq!(res.values[0], "Ok".into());
+        let cmd = CommandRequest::new_hmget("t1", vec!["name".into(), "age".into()]);
+        let res = dispatch(cmd.clone(), &store);
+        assert_res_ok(res, &["LuoJie".into(), 31.into()], &[]);
+        let cmd = CommandRequest::new_hmget("t1", vec!["name".into(), "address".into()]);
+        let res = dispatch(cmd.clone(), &store);
+        assert_res_ok(res, &[true.into(), false.into()], &[]);
     }
 
     fn assert_res_ok(mut res: CommandResponse, values: &[Value], pairs: &[Kvpair]) {
