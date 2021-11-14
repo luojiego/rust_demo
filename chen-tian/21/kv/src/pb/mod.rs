@@ -3,6 +3,7 @@ pub mod abi;
 
 
 use abi::{command_request::RequestData, *};
+use anyhow::{Result, anyhow};
 use http::StatusCode;
 
 use crate::KvError;
@@ -53,13 +54,23 @@ impl CommandRequest {
         }
     }
 
-    pub fn new_hmset(table: impl Into<String>, pairs: impl Into<Vec<Kvpair>>) -> Self {
-        Self {
+    pub fn new_hmset(table: impl Into<String>, pairs: impl Into<Vec<Kvpair>>) -> Result<Self> {
+        let p = pairs.into().clone();
+        let p1 = p.clone();
+
+        for i in p.iter() {
+            if let Some(_) = &i.value {
+            } else {
+                return Err(anyhow!("value is None"));
+            }
+        }
+
+        Ok(Self {
             request_data: Some(RequestData::Hmset(Hmset {
                 table: table.into(),
-                pairs: pairs.into(),
+                pairs: p1,
             }))
-        }
+        })
     }
 
     pub fn new_hmget(table: impl Into<String>, keys: impl Into<Vec<String>>) -> Self {
@@ -130,6 +141,16 @@ impl From<bool> for CommandResponse {
         Self {
             status: StatusCode::OK.as_u16() as _,
             values: vec![i.into()],
+            ..Default::default()
+        }
+    }
+}
+
+impl From<String> for CommandResponse {
+    fn from(s: String) -> Self {
+        Self {
+            status: StatusCode::OK.as_u16() as _,
+            values: vec![s.into()],
             ..Default::default()
         }
     }
