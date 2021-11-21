@@ -212,3 +212,9 @@ impl From<Option<Value>> for CommandResponse {
 
     }
 }
+
+impl From<(String, Value)> for Kvpair {
+    fn from(data: (String, Value)) -> Self {
+        Kvpair::new(data.0, data.1)
+    }
+}
