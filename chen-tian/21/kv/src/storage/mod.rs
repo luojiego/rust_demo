@@ -1,7 +1,9 @@
 use crate::{KvError, Kvpair, Value};
 mod memory;
-
 pub use memory::Memtable;
+
+mod sleddb;
+pub use sleddb::SledDb;
 
 pub trait Storage {
     fn get(&self, table: &str, key: &str) -> Result<Option<Value>, KvError>;

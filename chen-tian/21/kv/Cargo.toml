@@ -13,6 +13,7 @@ http = "0.2.5"
 prost = "0.8"
 thiserror = "1.0.30"
 tracing = "0.1" # 日志处理
+sled = "0.34" # sled db
 
 [dev-dependencies]
 anyhow = "1"
@@ -20,6 +21,7 @@ async-prost = "0.2.1"
 futures = "0.3" # 提供 Stream trait
 tokio = {version = "1.12.0", features = ["rt", "rt-multi-thread", "io-util", "macros", "net"]}
 tracing-subscriber = "0.2"
+tempfile = "3" # 处理临时目录和临时文件
 
 [build-dependencies]
 prost-build = "0.8.0"

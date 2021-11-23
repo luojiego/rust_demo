@@ -145,6 +145,7 @@ mod tests {
         vec![
                 Kvpair { key: "name".into(), value: Some("LuoJie".to_string().into()) }, 
                 Kvpair { key: "age".into(), value: Some(31.into()) },
+                Kvpair { key: "address".into(), value: Some("Xi'an".to_string().into()) },
         ]);
         let res = dispatch(cmd.unwrap(), &store);
         // let v = cmd.unwrap();
@@ -154,7 +155,7 @@ mod tests {
         assert_res_ok(res, &["LuoJie".into(), 31.into()], &[]);
         let cmd = CommandRequest::new_hmget("t1", vec!["name".into(), "address".into()]);
         let res = dispatch(cmd.clone(), &store);
-        assert_res_ok(res, &[true.into(), false.into()], &[]);
+        assert_res_ok(res, &["LuoJie".into(), "Xi'an".into()], &[]);
     }
 
     fn assert_res_ok(mut res: CommandResponse, values: &[Value], pairs: &[Kvpair]) {

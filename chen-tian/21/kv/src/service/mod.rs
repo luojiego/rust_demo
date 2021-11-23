@@ -87,10 +87,41 @@ impl<Store: Storage> Service<Store> {
 
     pub fn execute(&self, cmd: CommandRequest) -> CommandResponse {
         info!("Got request: {:?}", cmd);
-        let res = dispatch(cmd, &self.inner.store);
+        self.inner.on_received.notify(&cmd);
+        let mut res = dispatch(cmd, &self.inner.store);
         debug!("Executed response: {:?}", res);
-        info!("Executed response: {:?}", res);
+        self.inner.on_executed.notify(&res);
+        self.inner.on_before_send.notify(&mut res);
+        if !self.inner.on_before_send.is_empty() {
+            debug!("Nodifed response: {:?}", res)
+        }
         res
+    }
+}
+
+/// 事件通知（不可变事件）
+pub trait Notify<Arg> {
+    fn notify(&self, arg: &Arg);
+}
+
+pub trait NotifyMut<Arg> {
+    fn notify(&self, arg: &mut Arg);
+}
+
+impl<Arg> Notify<Arg> for Vec<fn(&Arg)> {
+    #[inline]
+    fn notify(&self, arg: &Arg) {
+        for f in self {
+            f(arg)
+        }
+    }
+}
+
+impl<Arg> NotifyMut<Arg> for Vec<fn(&mut Arg)> {
+    fn notify(&self, arg: &mut Arg) {
+        for f in self {
+            f(arg)
+        }
     }
 }
 
