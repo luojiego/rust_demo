@@ -1,4 +1,3 @@
-
 use anyhow::Result;
 use async_prost::AsyncProstStream;
 use futures::prelude::*;
@@ -43,7 +42,6 @@ async fn main() -> Result<()> {
         info!("Got response {:?}", data);
     }
 
-
     // 生成一个 HDEL 命令
     let cmd = CommandRequest::new_hdel("table1", "hello");
     // 发送 HDEL 命令
@@ -51,7 +49,6 @@ async fn main() -> Result<()> {
     if let Some(Ok(data)) = client.next().await {
         info!("Got response {:?}", data);
     }
-
 
     Ok(())
 }

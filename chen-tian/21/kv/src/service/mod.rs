@@ -3,12 +3,7 @@ use tracing::debug;
 use tracing::info;
 
 use crate::{
-    command_request::RequestData,
-    CommandRequest,
-    CommandResponse, 
-    KvError,
-    Memtable,
-    Storage
+    command_request::RequestData, CommandRequest, CommandResponse, KvError, Memtable, Storage,
 };
 
 mod command_service;
@@ -40,7 +35,7 @@ pub struct ServiceInner<Store> {
 
 impl<Store: Storage> ServiceInner<Store> {
     pub fn new(store: Store) -> Self {
-        Self { 
+        Self {
             store,
             on_received: Vec::new(),
             on_executed: Vec::new(),
@@ -183,7 +178,7 @@ mod tests {
         }
 
         let service: Service = ServiceInner::new(Memtable::default())
-            .fn_received(|_: &CommandRequest|{})
+            .fn_received(|_: &CommandRequest| {})
             .fn_received(b)
             .fn_executed(c)
             .fn_before_send(d)
@@ -195,8 +190,6 @@ mod tests {
         assert_eq!(res.message, "");
         assert_eq!(res.values, vec![Value::default()]);
     }
-
-    
 }
 
 #[cfg(test)]
@@ -204,7 +197,7 @@ use crate::{Kvpair, Value};
 
 #[cfg(test)]
 pub fn assert_res_ok(mut res: CommandResponse, values: &[Value], pairs: &[Kvpair]) {
-    res.pairs.sort_by(|a,b|a.partial_cmp(b).unwrap());
+    res.pairs.sort_by(|a, b| a.partial_cmp(b).unwrap());
     assert_eq!(res.status, 200);
     assert_eq!(res.message, "");
     assert_eq!(res.values, values);

@@ -25,21 +25,21 @@ impl SledDb {
 
 /// 把 Option<Result<T, E>> flip 成 Result<Option<T>,E>
 /// 从这个函数里面，你可以看到函数编译的优雅
-fn flip<T,E>(x: Option<Result<T,E>>) -> Result<Option<T>,E> {
-    x.map_or(Ok(None), |v|v.map(Some))
+fn flip<T, E>(x: Option<Result<T, E>>) -> Result<Option<T>, E> {
+    x.map_or(Ok(None), |v| v.map(Some))
 }
 
 impl Storage for SledDb {
     fn get(&self, table: &str, key: &str) -> Result<Option<Value>, KvError> {
         let name = SledDb::get_full_key(table, key);
-        let result = self.0.get(name.as_bytes())?.map(|v|v.as_ref().try_into());
+        let result = self.0.get(name.as_bytes())?.map(|v| v.as_ref().try_into());
         flip(result)
     }
 
     fn set(&self, table: &str, key: String, value: Value) -> Result<Option<Value>, KvError> {
         let name = SledDb::get_full_key(table, &key);
         let data: Vec<u8> = value.try_into()?;
-        let result = self.0.insert(name, data)?.map(|v|v.as_ref().try_into());
+        let result = self.0.insert(name, data)?.map(|v| v.as_ref().try_into());
         flip(result)
     }
 
@@ -58,20 +58,17 @@ impl Storage for SledDb {
     fn get_iter(&self, table: &str) -> Result<Box<dyn Iterator<Item = Kvpair>>, KvError> {
         todo!()
     }
-
-    
-    
 }
 
 impl From<Result<(IVec, IVec), sled::Error>> for Kvpair {
     fn from(v: Result<(IVec, IVec), sled::Error>) -> Self {
-       match v {
-           Ok((k, v)) => match v.as_ref().try_into() {
-               Ok(v) => Kvpair::new(ivec_to_key(k.as_ref()), v),
-               Err(_) => Kvpair::default(),
-           },
-           _ => Kvpair::default(),
-       } 
+        match v {
+            Ok((k, v)) => match v.as_ref().try_into() {
+                Ok(v) => Kvpair::new(ivec_to_key(k.as_ref()), v),
+                Err(_) => Kvpair::default(),
+            },
+            _ => Kvpair::default(),
+        }
     }
 }
 

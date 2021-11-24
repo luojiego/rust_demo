@@ -18,7 +18,7 @@ async fn main() -> Result<()> {
         info!("Client {:?} connected", addr);
         let svc = service.clone();
         tokio::spawn(async move {
-            let mut stream = 
+            let mut stream =
                 AsyncProstStream::<_, CommandRequest, CommandResponse, _>::from(stream).for_async();
             while let Some(Ok(cmd)) = stream.next().await {
                 // info!("Got a new command: {:?}", msg);
@@ -28,7 +28,7 @@ async fn main() -> Result<()> {
                 // resp.message = "Not found".to_string();
                 let res = svc.execute(cmd);
                 stream.send(res).await.unwrap();
-            }   
+            }
             info!("Client {:?} disconnected", addr);
         });
     }

@@ -13,7 +13,7 @@ pub trait Storage {
     fn contains(&self, table: &str, key: &str) -> Result<bool, KvError>;
 
     fn del(&self, table: &str, key: &str) -> Result<Option<Value>, KvError>;
-    
+
     fn get_all(&self, table: &str) -> Result<Vec<Kvpair>, KvError>;
 
     fn get_iter(&self, table: &str) -> Result<Box<dyn Iterator<Item = Kvpair>>, KvError>;
@@ -27,18 +27,18 @@ pub struct StorageIter<T> {
 
 impl<T> StorageIter<T> {
     pub fn new(data: T) -> Self {
-        Self  { data }
+        Self { data }
     }
 }
 
-impl<T> Iterator for StorageIter<T> 
+impl<T> Iterator for StorageIter<T>
 where
     T: Iterator,
     T::Item: Into<Kvpair>,
 {
     type Item = Kvpair;
     fn next(&mut self) -> Option<Self::Item> {
-        self.data.next().map(|v|v.into())
+        self.data.next().map(|v| v.into())
     }
 }
 
@@ -87,7 +87,7 @@ mod tests {
         store.set("t2", "k2".into(), "v2".into()).unwrap();
         let mut data = store.get_all("t2").unwrap();
 
-        data.sort_by(|a, b|a.partial_cmp(b).unwrap());
+        data.sort_by(|a, b| a.partial_cmp(b).unwrap());
         assert_eq!(
             data,
             vec![
@@ -99,15 +99,15 @@ mod tests {
 
     fn test_get_iter(store: impl Storage) {
         store.set("t2", "k1".into(), "v1".into()).unwrap();
-        store.set("t2", "k2".into(), "v2".into()).unwrap(); 
+        store.set("t2", "k2".into(), "v2".into()).unwrap();
         let mut data: Vec<_> = store.get_iter("t2").unwrap().collect();
         data.sort_by(|a, b| a.partial_cmp(b).unwrap());
-        assert_eq!(            
+        assert_eq!(
             data,
             vec![
                 Kvpair::new("k1", "v1".into()),
-                Kvpair::new("k2", "v2".into())            
-            ]        
+                Kvpair::new("k2", "v2".into())
+            ]
         )
     }
 
