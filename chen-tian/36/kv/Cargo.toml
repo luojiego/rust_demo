@@ -1,0 +1,30 @@
+[package]
+name = "kv"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.44"
+bytes = "1"
+dashmap = "4.0.2"
+http = "0.2.5"
+prost = "0.8"
+thiserror = "1.0.30"
+tracing = "0.1" # 日志处理
+sled = "0.34" # sled db
+flate2 = "1" # gzip 压缩 
+tokio = {version = "1", features = ["full"]} # 异步网络库
+
+[dev-dependencies]
+anyhow = "1"
+async-prost = "0.2.1"
+futures = "0.3" # 提供 Stream trait
+tokio = {version = "1.12.0", features = ["rt", "rt-multi-thread", "io-util", "macros", "net"]}
+tracing-subscriber = "0.2"
+tempfile = "3" # 处理临时目录和临时文件
+tokio-util = {version = "0.6", features = ["codec"]}
+
+[build-dependencies]
+prost-build = "0.8.0"
